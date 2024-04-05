@@ -67,15 +67,17 @@ def prepare_model_input(grid):
 
 if __name__ == "__main__":
 	# Take a screenshot of the screen and find the sudoku
-	pyautogui.hotkey("command", "tab", interval=0.25)
+	# If need to change the window, use the following code
+	# pyautogui.hotkey("command", "tab", interval=0.25)
+	# if sudoku in same window:
 	img = pyautogui.screenshot()
-	# DEBUG IMG: img = cv2.imread("/Users/cgonzalez/Downloads/test.png")
+	# Preprocess image
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	contours = preprocess_image(np.array(img))
 	grid = grid_location(contours)
 	if grid is None:
 		raise ValueError("No Sudoku/grid found")
-
+	# Crop sudoku grid so it can predict digit
 	grid = crop_grid(np.array(img), grid)
 	cells_img = prepare_model_input(split_cells(grid))
 	# Load the pretrained model
